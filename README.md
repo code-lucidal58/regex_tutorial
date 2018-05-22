@@ -1,7 +1,7 @@
 # Regex Tutorial
 Short Notes on Regular Expressions
 
-The first thing to recognize when using regular expressions is that everything is essentially a character.Patterns are written to match a specific sequence of characters. Mostly normal ASCII is used, but unicode characters can also be used to match international text. <br>
+The first thing to recognize when using regular expressions is that everything is essentially a character.Patterns are written to match a specific sequence of characters. Mostly normal ASCII is used, but unicode characters can also be used to match international text. Patterns created for regex are case-sensitive.<br>
 
 Forward slash(\\) will be used to create metacharacters. Metacharacters are characters that have special meaning for regex engine.
 ### digits
@@ -35,3 +35,6 @@ match 	dog
 skip 	bog
 Corresponding regex: [^b]o
 ```
+
+### character ranges
+If a set of sequential characters are to be denoted, inside square brackets, character range can be defined. E.g. **[a-z]** this will include any lowercase letter from a to z. Suppose you need to exclude a range of characters: E.g. **[^n-p]**. Multiple character ranges can also in included in a single bracket set. **[A-Z0-9a-z]** This includes all alphanumeric characters.
