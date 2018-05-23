@@ -71,3 +71,81 @@ match 	24 files found?
 skip 	No files found.
 Corresponding regex: \d+ files? found\?
 ```
+### whitespaces
+Whitespaces include space(\_), tab(\t), newline(\n) and carriage return(\r). Apart from these metacharacters, \s covers all whitespaces.
+```text
+match 	1.   abc
+match 	2.	abc
+match 	3.           abc
+skip 	4.abc
+Corresponding regex: \d\.\s+abc
+```
+
+### starting and ending
+It is best practice to write as specific regular expressions as possible to ensure that false positivesdo not creep in. E.g. search for 'success' in a file also taking into account 'Error: unsuccessful attempt'. To tighten patterns, **(^)hat** and **($)dollar** signs are used to mark the start and end of a line. ***Note***: This hat sign is different from the one used earlier in this tutorial to exclude characters.
+```text
+match 	Mission: successful
+skip 	Last Mission: unsuccessful
+skip 	Next Mission: successful upon capture of target
+Corresponding regex: ^Mission: successful$
+```
+
+### match groups
+Regular expressions allow information extraction for further processing. This is done by defining groups of characters and capturing them using the special parentheses **(** and **)** metacharacters. Any subpattern inside a pair of parentheses will be captured as a group. For example, **^(IMG\d+\.png)$** will capture and extract the full image filename, but if extension is not required, the pattern will be **^(IMG\d+)\.png$** which only captures the part before the period.
+```text
+capture 	file_record_transcript.pdf 	-> file_record_transcript
+capture 	file_07241999.pdf -> file_07241999
+skip 	testfile_fake.pdf.tmp
+Corresponding regex: ^(file.+)\.pdf$
+```
+
+### nested groups
+Nested groups can be used to extract multiple layers of information. Using previous example,the filename and the picture number both can be extracted using the same pattern by writing an expression like **^(IMG(\d+))\.png$**. The nested groups are read from left to right in the pattern, with the first capture group being the contents of the first parentheses group, etc.
+```text
+capture 	Jan 1987 -> Jan 1987 1987
+capture 	May 1969 ->	May 1969 1969
+capture 	Aug 2011 ->	Aug 2011 2011
+Corresponding regex: (\w+\s(\d+))
+```
+
+### conditionals
+The **| (logical OR, aka. the pipe)** is used to denote different possible sets of characters. Example, "Buy more (milk|bread|juice)" will match only the strings _Buy more milk_, _Buy more bread_, or _Buy more juice_. 
+```text
+match 	I love cats
+match 	I love dogs
+skip 	I love logs
+skip 	I love cogs
+Corresponding regex: I love (cats|dogs)
+```
+
+### back referencing and other special characters
+Back referencing varies depending on the implementation. However, many systems allow to reference captured groups by using **\0** (usually the full matched text), **\1** (group 1), **\2** (group 2), etc. For example, **"\2-\1"** to put the second captured data first, and the first captured data second.
+Additionally, there is a special metacharacter \b which matches the boundary between a word and a non-word character. It's most useful in capturing entire words (for example by using the pattern \w+\b).
+
+## Recaptulation
+<table>
+  <tr> <td>abc…</td><td>Letters</td> </tr>
+  <tr> <td>123…</td><td>Digits</td> </tr>
+  <tr> <td>\d</td><td>Any Digit</td> </tr>
+  <tr> <td>\D</td><td>Any Non-digit character</td> </tr>
+  <tr> <td>.</td><td>Any Character</td> </tr>
+  <tr> <td>\.</td><td>Period</td> </tr>
+  <tr> <td>[abc]</td><td>Only a, b, or c</td> </tr>
+  <tr> <td>[^abc]</td><td>Not a, b, nor c</td> </tr>
+  <tr> <td>[a-z]</td><td>Characters a to z</td> </tr>
+  <tr> <td>[0-9]</td><td>Numbers 0 to 9</td> </tr>
+  <tr> <td>\w</td><td>Any Alphanumeric character</td> </tr>
+  <tr> <td>\W</td><td>Any Non-alphanumeric character</td> </tr>
+  <tr> <td>{m}</td><td>m Repetitions</td> </tr> 
+  <tr> <td>{m,n}</td><td>m to n Repetitions</td> </tr> 
+  <tr> <td>*</td><td>Zero or more repetitions</td> </tr>
+  <tr> <td>+</td><td>One or more repetitions</td> </tr> 
+  <tr> <td>?</td><td>Optional character</td> </tr> 
+  <tr> <td>\s</td><td>Any Whitespace</td> </tr>
+  <tr> <td>\S</td><td>Any Non-whitespace character</td> </tr>
+  <tr> <td>^…$</td><td>Starts and ends</td> </tr>
+  <tr> <td>(…)</td><td>Capture Group</td> </tr>
+  <tr> <td>(a(bc))</td><td>Capture Sub-group</td> </tr>
+  <tr> <td>(.*)</td><td>Capture all</td> </tr>
+  <tr> <td>(abc|def)</td><td>Matches abc or def</td> </tr>
+</table>
